@@ -65,9 +65,3 @@ class App:
                     self.dijkstra_button.colour = AQUAMARINE
                 else:
                     self.bfs_button.colour, self.dfs_button.colour, self.astar_button.colour, self.dijkstra_button.colour = WHITE, WHITE, WHITE, WHITE
-
-
-
-
-def run_visualizer(self):
-        pass
