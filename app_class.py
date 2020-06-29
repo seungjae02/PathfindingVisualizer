@@ -20,6 +20,8 @@ class App:
         while self.running:
             if self.state == 'main menu':
                 self.main_menu()
+            if self.state == 'playing':
+                self.drawingboard()
         pygame.quit()
         sys.exit()
 
@@ -27,6 +29,8 @@ class App:
 
     def load(self):
         self.background = pygame.image.load('main_background.png')
+
+#################################### MAIN MENU FUNCTIONS ######################################
 
     def main_menu(self):
         # Draw Background
@@ -39,21 +43,24 @@ class App:
         self.astar_button.draw_main_button(AQUAMARINE)
         self.dijkstra_button.draw_main_button(AQUAMARINE)
 
+        # Check if game is running
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
 
             pos = pygame.mouse.get_pos()
+            # Get mouse position and check if it is hovering over button
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.bfs_button.isOver(pos):
-                    print('clicked the bfs')
+                    self.state = 'playing'
                 if self.dfs_button.isOver(pos):
-                    print('clicked the dfs')
+                    self.state = 'playing'
                 if self.astar_button.isOver(pos):
-                    print('clicked the astar')
+                    self.state = 'playing'
                 if self.dijkstra_button.isOver(pos):
-                    print('clicked the dijkstra')
+                    self.state = 'playing'
 
+            # Get mouse position and check if it is clicking button
             if event.type == pygame.MOUSEMOTION:
                 if self.bfs_button.isOver(pos):
                     self.bfs_button.colour = AQUAMARINE
@@ -65,3 +72,11 @@ class App:
                     self.dijkstra_button.colour = AQUAMARINE
                 else:
                     self.bfs_button.colour, self.dfs_button.colour, self.astar_button.colour, self.dijkstra_button.colour = WHITE, WHITE, WHITE, WHITE
+
+#################################### PLAYING STATE FUNCTIONS ######################################
+
+    def drawingboard(self):
+
+
+
+
