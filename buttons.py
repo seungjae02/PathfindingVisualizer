@@ -1,7 +1,7 @@
 import pygame
 from settings import *
 
-class MainMenuButtons():
+class Buttons():
     def __init__(self, app, colour, x, y, width, height, text=''):
         self.app = app
         self.colour = colour
@@ -11,7 +11,7 @@ class MainMenuButtons():
         self.height = height
         self.text = text
 
-    def draw_main_button(self, outline = None):
+    def draw_button(self, outline = None):
         if outline:
             pygame.draw.rect(self.app.screen, outline, (self.x-2, self.y-2, self.width+4, self.height+4), 0)
         pygame.draw.rect(self.app.screen, self.colour, (self.x, self.y, self.width, self.height), 0)
@@ -27,4 +27,3 @@ class MainMenuButtons():
             if pos[1] > self.y and pos[1] < self.y + self.height:
                 return True
         return False
-
