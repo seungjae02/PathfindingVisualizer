@@ -1,8 +1,12 @@
-import pygame, sys
+import sys
 from settings import *
 from buttons import *
+from bfs_class import *
+from visualize_path_class import *
 
 pygame.init()
+
+best_route = None
 
 class App:
     def __init__(self):
@@ -12,6 +16,18 @@ class App:
         self.state = 'main menu'
         self.grid_square_length = 24 # The dimensions of each grid square is 24 x 24
         self.load()
+        self.start_end_checker = 0
+        self.route_found = False
+        self.best_route = None
+
+        # Start and End Nodes Coordinates
+        self.start_node_x = None
+        self.start_node_y = None
+        self.end_node_x = None
+        self.end_node_y = None
+
+        # Wall Nodes List (list already includes the coordinates of the borders)
+        self.wall_pos = wall_nodes_coords_list
 
         # Define Main-Menu buttons
         self.bfs_button = Buttons(self, WHITE, 338, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Breadth-First Search')
@@ -31,6 +47,11 @@ class App:
                 self.main_menu_events()
             if self.state == 'show grid':
                 self.grid_events()
+            if self.state == 'draw S/E' or self.state == 'draw walls':
+                self.draw_nodes()
+            if self.state == 'start visualizing':
+                self.execute_search_algorithm()
+
         pygame.quit()
         sys.exit()
 
@@ -40,6 +61,16 @@ class App:
     def load(self):
         self.main_menu_background = pygame.image.load('main_background.png')
         self.grid_background = pygame.image.load('grid_logo.png')
+
+##### Draw Text
+    def draw_text(self, words, screen, pos, size, colour, font_name, centered=False):
+        font = pygame.font.SysFont(font_name, size)
+        text = font.render(words, False, colour)
+        text_size = text.get_size()
+        if centered:
+            pos[0] = pos[0] - text_size[0] // 2
+            pos[1] = pos[1] - text_size[1] // 2
+        screen.blit(text, pos)
 
 ##### Setup for Main Menu
     def sketch_main_menu(self):
@@ -87,6 +118,7 @@ class App:
         # Draw Background
         pygame.display.update()
         self.sketch_main_menu()
+        self.draw_text('Made By: Seung Jae Yang', self.screen, [1200, 720], 28, WHITE, FONT, centered=False)
 
         # Check if game is running
         for event in pygame.event.get():
@@ -117,7 +149,7 @@ class App:
                 else:
                     self.bfs_button.colour, self.dfs_button.colour, self.astar_button.colour, self.dijkstra_button.colour = WHITE, WHITE, WHITE, WHITE
 
-##### PLAYING STATE FUNCTIONS
+##### PLAYING STATE FUNCTIONS #####
 
     def grid_events(self):
         self.sketch_hotbar()
@@ -129,12 +161,13 @@ class App:
             if event.type == pygame.QUIT:
                 self.running = False
             pos = pygame.mouse.get_pos()
+
             # Get mouse position and check if it is clicking button
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.start_end_node_button.isOver(pos):
-                    print('pressed a')
+                    self.state = 'draw S/E'
                 elif self.wall_node_button.isOver(pos):
-                    print('pressed b')
+                    self.state = 'draw walls'
                 elif self.reset_button.isOver(pos):
                     print('pressed c')
                 elif self.start_button.isOver(pos):
@@ -152,6 +185,117 @@ class App:
                     self.start_button.colour = MINT
                 else:
                     self.start_end_node_button.colour, self.wall_node_button.colour, self.reset_button.colour, self.start_button.colour = STEELBLUE, STEELBLUE, STEELBLUE, STEELBLUE
+
+##### DRAWING STATE FUNCTIONS #####
+    # Check where the mouse is clicking on grid
+    # Add in feature to Draw nodes on grid
+    # Add in feature so that the drawn nodes on grid translate onto text file
+    def draw_nodes(self):
+        self.sketch_grid_buttons()
+        pygame.display.update()
+        pos = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            # Get mouse position and check if it is clicking button
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.start_end_node_button.isOver(pos):
+                    self.state = 'draw S/E'
+                elif self.wall_node_button.isOver(pos):
+                    self.state = 'draw walls'
+                elif self.reset_button.isOver(pos):
+                    print('Work In Progress')
+                elif self.start_button.isOver(pos):
+                    self.state = 'start visualizing'
+
+            # Get mouse position and check if it is hovering over button
+            if event.type == pygame.MOUSEMOTION:
+                if self.start_end_node_button.isOver(pos):
+                    self.start_end_node_button.colour = MINT
+                elif self.wall_node_button.isOver(pos):
+                    self.wall_node_button.colour = MINT
+                elif self.reset_button.isOver(pos):
+                    self.reset_button.colour = MINT
+                elif self.start_button.isOver(pos):
+                    self.start_button.colour = MINT
+                else:
+                    self.start_end_node_button.colour, self.wall_node_button.colour, self.reset_button.colour, self.start_button.colour = STEELBLUE, STEELBLUE, STEELBLUE, STEELBLUE
+
+            # Checking if mouse is within the boundary of the grid to draw
+            if pos[0] > 264 and pos[0] < 1512 and pos[1] > 24 and pos[1] < 744:
+                x_grid_pos = (pos[0] - 264) // 24
+                y_grid_pos = (pos[1] - 24) // 24
+                #print('GRID-COORD:', x_grid_pos, y_grid_pos)
+
+                # Get mouse position and check if it is clicking button. Then, draw if clicking
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.state == 'draw S/E' and self.start_end_checker < 2:
+
+                        # Choose point colour for grid and record the coordinate of start pos
+                        if self.start_end_checker == 0:
+                            node_colour = RED
+                            self.start_node_x = x_grid_pos + 1
+                            self.start_node_y = y_grid_pos + 1
+                            # print(self.start_node_x, self.start_node_y)
+                            self.start_end_checker += 1
+
+                        # Choose point colour for grid and record the coordinate of end pos
+                        elif self.start_end_checker == 1:
+                            node_colour = ROYALBLUE
+                            self.end_node_x = x_grid_pos + 1
+                            self.end_node_y = y_grid_pos + 1
+                            # print(self.end_node_x, self.end_node_y)
+                            self.start_end_checker += 1
+
+                        # Draw point on Grid
+                        pygame.draw.rect(self.screen, node_colour, (264 + x_grid_pos * 24, 24 + y_grid_pos * 24, 24, 24), 0)
+
+                    # Draw Wall Nodes and append Wall Node Coordinates to the Wall Nodes List
+                    elif self.state == 'draw walls':
+                        pygame.draw.rect(self.screen, BLACK, (264 + x_grid_pos*24, 24 + y_grid_pos*24, 24, 24), 0)
+                        self.wall_pos.append((x_grid_pos + 1, y_grid_pos + 1))
+                        # print(len(self.wall_pos))
+
+#################################### VISUALIZATION FUNCTIONS #########################################
+
+    def execute_search_algorithm(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+        #print(self.start_node_x, self.start_node_y)
+        #print(self.end_node_x, self.end_node_y)
+
+            # Make BFS object
+            self.bfs = BreadthFirst(self.start_node_x, self.start_node_y, self.end_node_x, self.end_node_y, self.wall_pos)
+
+            if self.start_node_x or self.end_node_x is not None:
+                while not self.route_found:
+                    self.bfs.bfs_execute()
+                    best_route = self.bfs.route
+                    self.route_found = True
+
+            # Make Object for new path
+            while True:
+                self.draw_path = VisualizePath(self.screen, self.start_node_x, self.start_node_y, best_route)
+                self.draw_path.get_path_coords()
+                self.draw_path.draw_path()
+                pygame.display.update()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

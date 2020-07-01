@@ -1,6 +1,6 @@
 import queue
 
-class BreadthFirst():
+class BreadthFirst:
     def __init__(self, start_node_x, start_node_y, end_node_x, end_node_y, wall_pos):
         self.start_node_x = start_node_x
         self.start_node_y = start_node_y
@@ -8,8 +8,25 @@ class BreadthFirst():
         self.end_node_y = end_node_y
         self.wall_pos = wall_pos
         self.visited = []
-        self.route = None
         #print('hello')
+
+    # Check for the borders
+    def border_nodes(self):
+        with open('nodes.txt') as nodes_file:
+            for yidx, line in enumerate(nodes_file):
+                for xidx, pos in enumerate(line):
+                    if pos == 'A':
+                        #print('found A')
+                        self.start_node_x = xidx
+                        self.start_node_y = yidx
+                        #print(self.start_node_x, self.start_node_y)
+                    elif pos == 'B':
+                        #print('found B')
+                        self.end_node_x = xidx
+                        self.end_node_y = yidx
+                        #print(self.end_node_x, self.end_node_y)
+                    elif pos == '1':
+                        self.wall_pos.append((xidx, yidx))
 
 # check if a certain path is valid
     def check_valid(self, moves):
@@ -62,4 +79,5 @@ class BreadthFirst():
                 latest_moves = first_out + j
                 if self.check_valid(latest_moves):
                     nums.put(latest_moves)
-        self.route = first_out
+        print(first_out)
+        print('found!')
