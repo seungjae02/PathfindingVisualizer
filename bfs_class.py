@@ -11,19 +11,24 @@ class BreadthFirst():
         self.route = None
         #print('hello')
 
+    def update_position(self, move, i, j):
+        if move == 'L':
+            i -= 1
+        elif move == 'R':
+            i += 1
+        elif move == 'U':
+            j -= 1
+        elif move == 'D':
+            j += 1
+        return i, j
+
 # check if a certain path is valid
     def check_valid(self, moves):
         i = self.start_node_x
         j = self.start_node_y
         for move in moves:
-            if move == 'L':
-                i -= 1
-            elif move == 'R':
-                i += 1
-            elif move == 'U':
-                j -= 1
-            elif move == 'D':
-                j += 1
+            i, j = self.update_position(move, i, j)
+
             if (i, j) in self.wall_pos:
                 return False
         if (i, j) in self.visited:
@@ -36,14 +41,8 @@ class BreadthFirst():
         i = self.start_node_x
         j = self.start_node_y
         for move in moves:
-            if move == 'L':
-                i -= 1
-            elif move == 'R':
-                i += 1
-            elif move == 'U':
-                j -= 1
-            elif move == 'D':
-                j += 1
+            i, j = self.update_position(move, i, j)
+
             print(i, j)
         if (i, j) == (self.end_node_x, self.end_node_y):
             return True
@@ -63,3 +62,8 @@ class BreadthFirst():
                 if self.check_valid(latest_moves):
                     nums.put(latest_moves)
         self.route = first_out
+
+    def bfs_reset(self):
+        self.visited = []
+        self.route = None
+
