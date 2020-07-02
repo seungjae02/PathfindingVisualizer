@@ -1,4 +1,5 @@
 import queue
+from settings import *
 
 class BreadthFirst():
     def __init__(self, start_node_x, start_node_y, end_node_x, end_node_y, wall_pos):

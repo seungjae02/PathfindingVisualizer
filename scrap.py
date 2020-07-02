@@ -1,11 +1,3 @@
-thing = []
+a = [(1,2), (1,4), (2,9), (420, 69)]
+a.pop((420, 69))
 
-
-
-with open('grid.txt') as nodes_file:
-    for yidx, line in enumerate(nodes_file):
-        for xidx, pos in enumerate(line):
-            if pos == '1':
-                thing.append((xidx, yidx))
-
-print(len(thing))

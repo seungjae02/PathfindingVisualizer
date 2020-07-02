@@ -13,7 +13,7 @@ class App:
         self.running = True
         self.state = 'main menu'
         self.algorithm_state = ''
-        self.grid_square_length = 24 # The dimensions of each grid square is 24 x 24
+        self.grid_square_length = 24 # The dimensions of each grid s(255,99,71)quare is 24 x 24
         self.load()
         self.start_end_checker = 0
         self.route_found = False
@@ -257,7 +257,7 @@ class App:
 
                         # Choose point colour for grid and record the coordinate of start pos
                         if self.start_end_checker == 0:
-                            node_colour = RED
+                            node_colour = TOMATO
                             self.start_node_x = x_grid_pos + 1
                             self.start_node_y = y_grid_pos + 1
                             # print(self.start_node_x, self.start_node_y)
@@ -303,11 +303,19 @@ class App:
                     self.bfs.bfs_execute()
                     self.route_found = True
 
-            # Make Object for new path
+            # Draw all paths taken
+            for (i, j) in self.bfs.visited:
+                     pygame.draw.rect(self.screen, TAN, (i * 24 + 240, j * 24, 24, 24), 0)
 
+            # Redraw start/end nodes on top of all routes
+            pygame.draw.rect(self.screen, TOMATO, (240 + self.start_node_x * 24, self.start_node_y * 24, 24, 24), 0)
+            pygame.draw.rect(self.screen, ROYALBLUE, (240 + self.end_node_x * 24, self.end_node_y * 24, 24, 24), 0)
+
+            # Make Object for new path
             self.draw_path = VisualizePath(self.screen, self.start_node_x, self.start_node_y, self.bfs.route)
             self.draw_path.get_path_coords()
             self.draw_path.draw_path()
+
             pygame.display.update()
             self.state = 'aftermath'
 
