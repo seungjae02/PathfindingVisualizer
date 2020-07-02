@@ -2,6 +2,7 @@ import sys
 from settings import *
 from buttons import *
 from bfs_class import *
+from dfs_class import *
 from visualize_path_class import *
 
 pygame.init()
@@ -13,7 +14,7 @@ class App:
         self.running = True
         self.state = 'main menu'
         self.algorithm_state = ''
-        self.grid_square_length = 24 # The dimensions of each grid s(255,99,71)quare is 24 x 24
+        self.grid_square_length = 24 # The dimensions of each grid square is 24 x 24
         self.load()
         self.start_end_checker = 0
         self.route_found = False
@@ -296,20 +297,12 @@ class App:
         #print(self.end_node_x, self.end_node_y)
 
         if self.algorithm_state == 'bfs':
-            self.bfs = BreadthFirst(self.start_node_x, self.start_node_y, self.end_node_x, self.end_node_y, self.wall_pos)
+            self.bfs = BreadthFirst(self, self.start_node_x, self.start_node_y, self.end_node_x, self.end_node_y, self.wall_pos)
 
             if self.start_node_x or self.end_node_x is not None:
                 while not self.route_found:
                     self.bfs.bfs_execute()
                     self.route_found = True
-
-            # Draw all paths taken
-            for (i, j) in self.bfs.visited:
-                     pygame.draw.rect(self.screen, TAN, (i * 24 + 240, j * 24, 24, 24), 0)
-
-            # Redraw start/end nodes on top of all routes
-            pygame.draw.rect(self.screen, TOMATO, (240 + self.start_node_x * 24, self.start_node_y * 24, 24, 24), 0)
-            pygame.draw.rect(self.screen, ROYALBLUE, (240 + self.end_node_x * 24, self.end_node_y * 24, 24, 24), 0)
 
             # Make Object for new path
             self.draw_path = VisualizePath(self.screen, self.start_node_x, self.start_node_y, self.bfs.route)
@@ -320,7 +313,21 @@ class App:
             self.state = 'aftermath'
 
         elif self.algorithm_state == 'dfs':
-            pass
+            self.dfs = DepthFirst(self, self.start_node_x, self.start_node_y, self.end_node_x, self.end_node_y, self.wall_pos)
+
+            if self.start_node_x or self.end_node_x is not None:
+                while not self.route_found:
+                    self.dfs.dfs_execute()
+                    self.route_found = True
+
+            # Make Object for new path
+            self.draw_path = VisualizePath(self.screen, self.start_node_x, self.start_node_y, self.dfs.route)
+            self.draw_path.get_path_coords()
+            self.draw_path.draw_path()
+
+            pygame.display.update()
+            self.state = 'aftermath'
+
         elif self.algorithm_state == 'astar':
             pass
         elif self.algorithm_state == 'dijkstra':

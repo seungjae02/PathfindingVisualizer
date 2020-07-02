@@ -1,7 +1,6 @@
-import queue
 from settings import *
 
-class BreadthFirst():
+class DepthFirst():
     def __init__(self, app, start_node_x, start_node_y, end_node_x, end_node_y, wall_pos):
         self.app = app
         self.start_node_x = start_node_x
@@ -11,7 +10,7 @@ class BreadthFirst():
         self.wall_pos = wall_pos
         self.visited = []
         self.route = None
-        #print('hello')
+        # print('hello')
 
     def update_position(self, move, i, j):
         if move == 'L':
@@ -24,7 +23,7 @@ class BreadthFirst():
             j += 1
         return i, j
 
-# check if a certain path is valid
+    # check if a certain path is valid
     def check_valid(self, moves):
         i = self.start_node_x
         j = self.start_node_y
@@ -57,22 +56,23 @@ class BreadthFirst():
             return True
         return False
 
-    def bfs_execute(self):
-        #print('execute')
-        nums = queue.Queue()
-        nums.put("")
-        first_out = ""
+    def dfs_execute(self):
+        # print('execute')
+        stack = []
+        stack.append("")
+        last_out = ""
 
-        while not self.findEnd(first_out):
-            first_out = nums.get()
-            #print(add)
+        while not self.findEnd(last_out):
+            last_out = stack.pop()
+            # print(add)
             for j in ["L", "R", "U", "D"]:
-                latest_moves = first_out + j
+                latest_moves = last_out + j
                 if self.check_valid(latest_moves):
-                    nums.put(latest_moves)
-        self.route = first_out
+                    stack.append(latest_moves)
+        self.route = last_out
 
-    def bfs_reset(self):
+
+    def dfs_reset(self):
         self.visited = []
         self.route = None
 
