@@ -154,9 +154,6 @@ class App:
         self.end_node_x = None
         self.end_node_y = None
 
-        # Reset Class Attributes
-        self.bfs.bfs_reset()
-
         # Wall Nodes List (list already includes the coordinates of the borders)
         self.wall_pos = wall_nodes_coords_list.copy()
 
@@ -250,12 +247,9 @@ class App:
                 # Get mouse position and check if it is clicking button. Then, draw if clicking. CHECK DRAG STATE
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.mouse_drag = 1
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    self.mouse_drag = 0
 
-                if self.mouse_drag == 1:
+                    # The chunk of code for start/end pos is placed here, because I do not want the drag feature to be available for start/end nodes
                     if self.state == 'draw S/E' and self.start_end_checker < 2:
-
                         # Choose point colour for grid and record the coordinate of start pos
                         if self.start_end_checker == 0:
                             node_colour = TOMATO
@@ -266,7 +260,7 @@ class App:
 
                         # Choose point colour for grid and record the coordinate of end pos
                         # Also, check that the end node is not the same point as start node
-                        elif self.start_end_checker == 1 and x_grid_pos + 1 != self.start_node_x and y_grid_pos + 1 != self.start_node_y:
+                        elif self.start_end_checker == 1 and (x_grid_pos+1, y_grid_pos+1) != (self.start_node_x, self.start_node_y):
                             node_colour = ROYALBLUE
                             self.end_node_x = x_grid_pos + 1
                             self.end_node_y = y_grid_pos + 1
@@ -279,12 +273,28 @@ class App:
                         # Draw point on Grid
                         pygame.draw.rect(self.screen, node_colour, (264 + x_grid_pos * 24, 24 + y_grid_pos * 24, 24, 24), 0)
 
+                # Checks if mouse button is no longer held down
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    self.mouse_drag = 0
+
+                # Checks if mouse button is being held down; drag feature
+                if self.mouse_drag == 1:
                     # Draw Wall Nodes and append Wall Node Coordinates to the Wall Nodes List
-                    elif self.state == 'draw walls':
-                        pygame.draw.rect(self.screen, BLACK, (264 + x_grid_pos*24, 24 + y_grid_pos*24, 24, 24), 0)
-                        if (x_grid_pos + 1, y_grid_pos + 1) not in self.wall_pos:
+                    # Check if wall node being drawn/added is already in the list and check if it is overlapping start/end nodes
+                    if self.state == 'draw walls':
+                        if (x_grid_pos + 1, y_grid_pos + 1) not in self.wall_pos \
+                                and (x_grid_pos + 1, y_grid_pos + 1) != (self.start_node_x, self.start_node_y) \
+                                and (x_grid_pos + 1, y_grid_pos + 1) != (self.end_node_x, self.end_node_y):
+                            pygame.draw.rect(self.screen, BLACK, (264 + x_grid_pos * 24, 24 + y_grid_pos * 24, 24, 24), 0)
                             self.wall_pos.append((x_grid_pos + 1, y_grid_pos + 1))
                         # print(len(self.wall_pos))
+
+                for x in range(52):
+                    pygame.draw.line(self.screen, ALICE, (GS_X + x * self.grid_square_length, GS_Y),
+                                     (GS_X + x * self.grid_square_length, GE_Y))
+                for y in range(30):
+                    pygame.draw.line(self.screen, ALICE, (GS_X, GS_Y + y * self.grid_square_length),
+                                     (GE_X, GS_Y + y * self.grid_square_length))
 
 #################################### VISUALIZATION FUNCTIONS #########################################
 
