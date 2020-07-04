@@ -8,71 +8,82 @@ class DepthFirst():
         self.end_node_x = end_node_x
         self.end_node_y = end_node_y
         self.wall_pos = wall_pos
-        self.visited = []
+        self.visited = [(self.start_node_x, self.start_node_y)]
         self.route = None
-        # print('hello')
+        self.route_found = False
 
-    def update_position(self, move, i, j):
-        if move == 'L':
-            i -= 1
-        elif move == 'R':
-            i += 1
-        elif move == 'U':
-            j -= 1
-        elif move == 'D':
-            j += 1
-        return i, j
+    def draw_all_paths(self, i, j):
+        ##### Draw each node the computer is visiting as it is searching SIMULTNEOUSLY
+        pygame.draw.rect(self.app.screen, TAN, (i * 24 + 240, j * 24, 24, 24), 0)
 
-    # check if a certain path is valid
-    def check_valid(self, moves):
-        i = self.start_node_x
-        j = self.start_node_y
-        for move in moves:
-            i, j = self.update_position(move, i, j)
+        ##### Redraw start/end nodes on top of all routes
+        pygame.draw.rect(self.app.screen, TOMATO,
+                         (240 + self.start_node_x * 24, self.start_node_y * 24, 24, 24), 0)
+        pygame.draw.rect(self.app.screen, ROYALBLUE,
+                         (240 + self.end_node_x * 24, self.end_node_y * 24, 24, 24), 0)
 
-            if (i, j) in self.wall_pos:
-                return False
-        if (i, j) in self.visited:
-            return False
-        else:
-            ##### Draw each node the computer is visiting as it is searching SIMULTNEOUSLY
-            pygame.draw.rect(self.app.screen, TAN, (i * 24 + 240, j * 24, 24, 24), 0)
+        # Redraw grid (for aesthetic purposes lol)
+        for x in range(52):
+            pygame.draw.line(self.app.screen, ALICE, (GS_X + x * 24, GS_Y),
+                             (GS_X + x * 24, GE_Y))
+        for y in range(30):
+            pygame.draw.line(self.app.screen, ALICE, (GS_X, GS_Y + y * 24),
+                             (GE_X, GS_Y + y * 24))
 
-            ##### Redraw start/end nodes on top of all routes
-            pygame.draw.rect(self.app.screen, TOMATO, (240 + self.start_node_x * 24, self.start_node_y * 24, 24, 24), 0)
-            pygame.draw.rect(self.app.screen, ROYALBLUE, (240 + self.end_node_x * 24, self.end_node_y * 24, 24, 24), 0)
-            pygame.display.update()
-            self.visited.append((i, j))
+        pygame.display.update()
+
+    def checkValid(self, move):
+        if move not in self.wall_pos and move not in self.visited:
+            self.visited.append(move)
             return True
+        return False
 
-    def findEnd(self, moves):
-        i = self.start_node_x
-        j = self.start_node_y
-        for move in moves:
-            i, j = self.update_position(move, i, j)
-
-            print(i, j)
-        if (i, j) == (self.end_node_x, self.end_node_y):
+    def findEnd(self, first_in):
+        if first_in == (self.end_node_x, self.end_node_y):
             return True
         return False
 
     def dfs_execute(self):
-        # print('execute')
         stack = []
-        stack.append("")
-        last_out = ""
+        first_in = (self.start_node_x, self.start_node_y)
+        stack.append(first_in)
 
-        while not self.findEnd(last_out):
+        moves_stack = []
+        moves_first_in = ''
+        moves_stack.append(moves_first_in)
+
+        while len(stack) > 0:
             last_out = stack.pop()
-            # print(add)
-            for j in ["L", "R", "U", "D"]:
-                latest_moves = last_out + j
-                if self.check_valid(latest_moves):
-                    stack.append(latest_moves)
-        self.route = last_out
+            moves_last_out = moves_stack.pop()
+
+            for m in ['L', 'R', 'U', 'D']:
+                i, j = last_out
+                if m == 'L':
+                    i -= 1
+                elif m == 'R':
+                    i += 1
+                elif m == 'U':
+                    j -= 1
+                elif m == 'D':
+                    j += 1
+
+                move_update = moves_last_out + m
+
+                if self.findEnd((i, j)):
+                    self.route = move_update
+                    self.route_found = True
+                    break
+
+                if self.checkValid((i, j)):
+                    stack.append((i, j))
+                    moves_stack.append(move_update)
+                    self.draw_all_paths(i, j)
+
+            if self.route_found:
+                break
 
 
-    def dfs_reset(self):
-        self.visited = []
-        self.route = None
+
+
+
 
