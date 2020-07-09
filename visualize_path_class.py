@@ -1,13 +1,14 @@
 from settings import *
 
 class VisualizePath():
-    def __init__(self, surface, start_node_x, start_node_y, path):
+    def __init__(self, surface, start_node_x, start_node_y, path, path_coords):
         self.surface = surface
         self.start_node_x = start_node_x
         self.start_node_y = start_node_y
         self.path = path
-        self.path_coords = list()
+        self.path_coords = path_coords
 
+    # For BFS and DFS mainly
     def get_path_coords(self):
         i = self.start_node_x
         j = self.start_node_y

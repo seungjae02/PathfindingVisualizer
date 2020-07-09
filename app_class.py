@@ -3,6 +3,7 @@ from settings import *
 from buttons import *
 from bfs_class import *
 from dfs_class import *
+from astar_class import *
 from visualize_path_class import *
 
 pygame.init()
@@ -337,7 +338,7 @@ class App:
 
             # Make Object for new path
             if self.bfs.route_found:
-                self.draw_path = VisualizePath(self.screen, self.start_node_x, self.start_node_y, self.bfs.route)
+                self.draw_path = VisualizePath(self.screen, self.start_node_x, self.start_node_y, self.bfs.route, [])
                 self.draw_path.get_path_coords()
                 self.draw_path.draw_path()
 
@@ -347,7 +348,7 @@ class App:
         ### DFS ###
 
         elif self.algorithm_state == 'dfs':
-            self.dfs = DepthFirst(self, self.start_node_x, self.start_node_y, self.end_node_x, self.end_node_y, self.wall_pos)
+            self.dfs = DepthFirst(self, self.start_node_x, self.start_node_y, self.end_node_x, self.end_node_y, self.wall_pos, [])
 
             if self.start_node_x or self.end_node_x is not None:
                 self.dfs.dfs_execute()
@@ -364,7 +365,14 @@ class App:
         ### A-STAR ###
 
         elif self.algorithm_state == 'astar':
-            pass
+            self.astar = AStar(self, self.start_node_x, self.start_node_y, self.end_node_x, self.end_node_y, self.wall_pos)
+
+            if self.start_node_x or self.end_node_x is not None:
+                self.astar.astar_execute()
+
+            if self.astar.route_found:
+                self.draw_path = VisualizePath(self.screen, self.start_node_x, self.start_node_y, None, self.astar.route)
+                self.draw_path.draw_path()
 
         ### DIJKSTRA ###
 
