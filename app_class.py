@@ -374,6 +374,9 @@ class App:
                 self.draw_path = VisualizePath(self.screen, self.start_node_x, self.start_node_y, None, self.astar.route)
                 self.draw_path.draw_path()
 
+            else:
+                self.draw_text('NO ROUTE FOUND!', self.screen, [768, 384], 50, RED, FONT, centered=True)
+
         ### DIJKSTRA ###
 
         elif self.algorithm_state == 'dijkstra':

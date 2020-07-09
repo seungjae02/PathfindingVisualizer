@@ -51,7 +51,7 @@ class AStar():
                 self.F_calc(child)
 
                 # If node not already added to the open list AND node isn't cutting corners around wall, then append
-                if self.append_to_open(child) and self.check_wall_corner(m, child.position):
+                if self.append_to_open(child) and self.check_wall_corner(m, parent_pos):
                     self.open_list.append(child)
 
     def append_to_open(self, child):
@@ -65,19 +65,31 @@ class AStar():
                 return False
         return True
 
-    def check_wall_corner(self, move, child_pos):
-        i,j = child_pos
-        (m,n) = move
-        # (x, y) = Orthogonal
-        if move == (1,1): (x,y) = (0,1)
-        elif move == (1,-1): (x,y) = (1,0)
-        elif move == (-1,-1): (x,y) = (0,-1)
-        else: (x,y) = (-1,0)
+    def check_wall_corner(self, move, parent_pos):
+        if move == (-1, 1) or move == (1, 1) or move == (1, -1) or move == (-1, -1):
+            i,j = parent_pos
+            (m,n) = move
+            # (x, y) = Orthogonal
+            if move == (1,1):
+                (x,y) = (0,1)
+                (a,b) = (1,0)
+            elif move == (1,-1):
+                (x,y) = (1,0)
+                (a, b) = (0,-1)
+            elif move == (-1,-1):
+                (x,y) = (0,-1)
+                (a, b) = (-1,0)
+            else:
+                (x,y) = (-1,0)
+                (a, b) = (0,1)
 
-        # If cutting corner case, return False
-        if (i+x, j+y) in self.wall_pos and (i+m, j+n) not in self.wall_pos:
-            return False
-        return True
+            # If cutting corner case, return False
+            if (i+x, j+y) in self.wall_pos or (i+a, i+b) in self. wall_pos and (i+m, j+n) not in self.wall_pos:
+                return False
+            return True
+        else:
+            return True
+
 
     def G_calc(self, child, parent, m):
         # Determine if move is orthogonal or diagonal
@@ -133,6 +145,7 @@ class AStar():
                 while current is not None:
                     self.route.append(current.position)
                     current = current.parent
+                self.route.pop(0)
                 self.route_found = True
                 break
 
