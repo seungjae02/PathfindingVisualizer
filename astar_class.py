@@ -90,7 +90,6 @@ class AStar():
         else:
             return True
 
-
     def G_calc(self, child, parent, m):
         # Determine if move is orthogonal or diagonal
         sum_difference = abs(sum(m))
