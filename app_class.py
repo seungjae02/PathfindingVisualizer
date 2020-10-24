@@ -113,7 +113,7 @@ class App:
         self.wall_node_button.draw_button(STEELBLUE)
         self.reset_button.draw_button(STEELBLUE)
         self.start_button.draw_button(STEELBLUE)
-        self.main_menu_button.draw_button((STEELBLUE))
+        self.main_menu_button.draw_button(STEELBLUE)
 
 ##### Function for the buttons on grid window. Became too repetitive so, I made it a function. Checks for state when button is clicked and changes button colour when hovered over.
     def grid_window_buttons(self, pos, event):
