@@ -33,6 +33,8 @@ TOMATO = (255,99,71)
 ROYALBLUE = (72,118,255)
 TAN = (255,165,79)
 RED = (255,0,0)
+VIOLETRED = (255,130,171)
+TURQUOISE = (0,245,255)
 
 ##### Grid Settings #####
 # GS MEANS Grid-Start
