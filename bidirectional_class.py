@@ -12,8 +12,8 @@ class Bidirectional():
         self.end_node_x = end_node_x
         self.end_node_y = end_node_y
         self.wall_pos = wall_pos
-        self.visited_pos_f = [(self.start_node_x, self.start_node_y)]
-        self.visited_pos_r = [(self.end_node_x, self.end_node_y)]
+        self.visited_pos_f = {(self.start_node_x, self.start_node_y)}
+        self.visited_pos_r = {(self.end_node_x, self.end_node_y)}
         self.visited_node_f = []
         self.visited_node_r = []
         self.route_f = []
@@ -41,7 +41,7 @@ class Bidirectional():
         if node.position not in self.wall_pos and node.position not in visited_pos:
             #print('appended')
             visited_node.append(node)
-            visited_pos.append(node.position)
+            visited_pos.add(node.position)
             return True
         return False
 
@@ -49,6 +49,23 @@ class Bidirectional():
         if first_out in opp_visited:
             return True
         return False
+
+    def backTrack(self, visited_node, converge_node_pos, first_out):
+
+        current = first_out
+        current_opp = None
+
+        for node in visited_node:
+            if node.position == converge_node_pos:
+                current_opp = node
+
+        while current is not None:
+            self.route_f.append(current.position)
+            current = current.parent
+
+        while current_opp is not None:
+            self.route_r.append(current_opp.position)
+            current_opp = current_opp.parent
 
     def bidirectional_execute(self):
         start_node = Node((self.start_node_x, self.start_node_y), None)
@@ -66,7 +83,6 @@ class Bidirectional():
             first_out_r = rev_queue.pop(0)
 
             for m in ['L', 'R', 'U', 'D']:
-                #print('ioahsoiadjioajiodjasdasdasdhdioad')
                 i, j = first_out_f.position
                 a, b = first_out_r.position
                 # print('parent:', i, j)
@@ -87,63 +103,31 @@ class Bidirectional():
                 new_node_r = Node((a, b), first_out_r)
 
                 if self.checkValid(new_node_f, self.visited_node_f, self.visited_pos_f):
-                    #print('valid1')
-                    print(new_node_f.position)
+                    #print(new_node_f.position)
                     self.draw_all_paths(new_node_f.position, VIOLETRED)
                     fwd_queue.append(new_node_f)
 
                 if self.checkValid(new_node_r, self.visited_node_r, self.visited_pos_r):
-                    #print('valid2')
                     self.draw_all_paths(new_node_r.position, TURQUOISE)
                     rev_queue.append(new_node_r)
 
+                # Check if some route has been found from either ends
                 if self.findRoute((i, j), self.visited_pos_r):
-                    print('route found, but idk what to do')
-                    #print('found')
                     self.route_found = True
-                    current_f = first_out_f
-                    current_r = None
 
-                    for node in self.visited_node_r:
-                        #print('three')
-                        if node.position == (i,j):
-                            current_r = node
-
-                    while current_f is not None:
-                        print('adding 1')
-                        self.route_f.append(current_f.position)
-                        current_f = current_f.parent
-
-                    while current_r is not None:
-                        print('adding 2')
-                        self.route_r.append(current_r.position)
-                        current_r = current_r.parent
-                    print('about to break')
+                    # Backtrack the route from each ends
+                    self.backTrack(self.visited_node_r, new_node_f.position, first_out_f)
                     break
 
                 elif self.findRoute((a, b), self.visited_pos_f):
-                    print('route found, but idk what to do')
                     self.route_found = True
-                    current_r = first_out_r
-                    current_f = None
 
-                    for node in self.visited_node_f:
-                        if node.position == (a, b):
-                            current_f = node
-
-                    while current_f is not None:
-                        print('adding 1')
-                        self.route_f.append(current_f.position)
-                        current_f = current_f.parent
-
-                    while current_r is not None:
-                        print('adding 2')
-                        self.route_r.append(current_r.position)
-                        current_r = current_r.parent
-                    print('about to break')
+                    # Backtrack the route from each ends
+                    self.backTrack(self.visited_node_f, new_node_r.position, first_out_r)
                     break
 
-
             if self.route_found:
+                print(self.route_f)
+                # print(self.route_r)
                 break
 
