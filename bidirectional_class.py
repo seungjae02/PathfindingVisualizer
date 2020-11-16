@@ -14,8 +14,8 @@ class Bidirectional():
         self.wall_pos = wall_pos
         self.visited_pos_f = {(self.start_node_x, self.start_node_y)}
         self.visited_pos_r = {(self.end_node_x, self.end_node_y)}
-        self.visited_node_f = []
-        self.visited_node_r = []
+        self.visited_node_f = dict()
+        self.visited_node_r = dict()
         self.route_f = []
         self.route_r = []
         self.route_found = False
@@ -40,7 +40,7 @@ class Bidirectional():
     def checkValid(self, node, visited_node, visited_pos):
         if node.position not in self.wall_pos and node.position not in visited_pos:
             #print('appended')
-            visited_node.append(node)
+            visited_node[node.position] = node
             visited_pos.add(node.position)
             return True
         return False
@@ -50,14 +50,10 @@ class Bidirectional():
             return True
         return False
 
-    def backTrack(self, visited_node, converge_node_pos, first_out):
+    def backTrack(self, opp_visited_node_list, converge_node_pos, first_out):
 
         current = first_out
-        current_opp = None
-
-        for node in visited_node:
-            if node.position == converge_node_pos:
-                current_opp = node
+        current_opp = opp_visited_node_list[converge_node_pos]
 
         while current is not None:
             self.route_f.append(current.position)
@@ -74,8 +70,8 @@ class Bidirectional():
         rev_queue = [end_node]
 
         # Initialize start/end nodes
-        self.visited_node_f.append(start_node)
-        self.visited_node_r.append(end_node)
+        self.visited_node_f[start_node.position] = start_node
+        self.visited_node_r[end_node.position] = end_node
 
         while len(fwd_queue) and len(rev_queue) > 0:
             # Parent variables of parent nodes at the given time
@@ -130,4 +126,3 @@ class Bidirectional():
                 print(self.route_f)
                 # print(self.route_r)
                 break
-

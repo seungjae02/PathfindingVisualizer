@@ -1,4 +1,4 @@
-thing = set()
+a = 2
+b = 1
 
-thing.add(1)
-print(thing)
+a, b = a + 1, b - 1
