@@ -32,11 +32,11 @@ class App:
         self.wall_pos = wall_nodes_coords_list.copy()
 
         # Define Main-Menu buttons
-        self.bfs_button = Buttons(self, WHITE, 138, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Breadth-First Search')
-        self.dfs_button = Buttons(self, WHITE, 358, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Depth-First Search')
-        self.astar_button = Buttons(self, WHITE, 578, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'A-Star Search')
-        self.dijkstra_button = Buttons(self, WHITE, 798, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Dijkstra Search')
-        self.bidirectional_button = Buttons(self, WHITE, 1018, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Bidirectional Search')
+        self.bfs_button = Buttons(self, WHITE, 228, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Breadth-First Search')
+        self.dfs_button = Buttons(self, WHITE, 448, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Depth-First Search')
+        self.astar_button = Buttons(self, WHITE, 668, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'A-Star Search')
+        self.dijkstra_button = Buttons(self, WHITE, 888, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Dijkstra Search')
+        self.bidirectional_button = Buttons(self, WHITE, 1108, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Bidirectional Search')
 
         # Define Grid-Menu buttons
         self.start_end_node_button = Buttons(self, AQUAMARINE, 20, START_END_BUTTON_HEIGHT, GRID_BUTTON_LENGTH, GRID_BUTTON_HEIGHT, 'Start/End Node')
