@@ -7,6 +7,7 @@ from astar_class import *
 from dijkstra_class import *
 from bidirectional_class import *
 from visualize_path_class import *
+from maze_class import *
 
 pygame.init()
 
@@ -31,6 +32,9 @@ class App:
         # Wall Nodes List (list already includes the coordinates of the borders)
         self.wall_pos = wall_nodes_coords_list.copy()
 
+        # Maze Class Instantiation
+        self.maze = Maze(self, self.wall_pos)
+
         # Define Main-Menu buttons
         self.bfs_button = Buttons(self, WHITE, 228, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Breadth-First Search')
         self.dfs_button = Buttons(self, WHITE, 448, MAIN_BUTTON_Y_POS, MAIN_BUTTON_LENGTH, MAIN_BUTTON_HEIGHT, 'Depth-First Search')
@@ -44,7 +48,7 @@ class App:
         self.reset_button = Buttons(self, AQUAMARINE, 20, START_END_BUTTON_HEIGHT + GRID_BUTTON_HEIGHT*2 + BUTTON_SPACER*2, GRID_BUTTON_LENGTH, GRID_BUTTON_HEIGHT, 'Reset')
         self.start_button = Buttons(self, AQUAMARINE, 20, START_END_BUTTON_HEIGHT + GRID_BUTTON_HEIGHT*3 + BUTTON_SPACER*3, GRID_BUTTON_LENGTH, GRID_BUTTON_HEIGHT, 'Visualize Path')
         self.main_menu_button = Buttons(self, AQUAMARINE, 20, START_END_BUTTON_HEIGHT + GRID_BUTTON_HEIGHT * 4 + BUTTON_SPACER * 4, GRID_BUTTON_LENGTH, GRID_BUTTON_HEIGHT, 'Main Menu')
-
+        self.maze_generate_button = Buttons(self, AQUAMARINE, 20, START_END_BUTTON_HEIGHT + GRID_BUTTON_HEIGHT * 5 + BUTTON_SPACER * 5, GRID_BUTTON_LENGTH, GRID_BUTTON_HEIGHT, 'Generate Maze')
     def run(self):
         while self.running:
             if self.state == 'main menu':
@@ -117,8 +121,10 @@ class App:
         self.reset_button.draw_button(STEELBLUE)
         self.start_button.draw_button(STEELBLUE)
         self.main_menu_button.draw_button(STEELBLUE)
+        self.maze_generate_button.draw_button(STEELBLUE)
 
-##### Function for the buttons on grid window. Became too repetitive so, I made it a function. Checks for state when button is clicked and changes button colour when hovered over.
+##### Function for the buttons on grid window. Became too repetitive so, I made it a function.
+    # Checks for state when button is clicked and changes button colour when hovered over.
     def grid_window_buttons(self, pos, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.start_end_node_button.isOver(pos):
@@ -131,6 +137,10 @@ class App:
                 self.state = 'start visualizing'
             elif self.main_menu_button.isOver(pos):
                 self.back_to_menu()
+            elif self.maze_generate_button.isOver(pos):
+                self.state = 'draw walls'
+                self.maze.generateSolid()
+                self.state = 'draw S/E'
 
         # Get mouse position and check if it is hovering over button
         if event.type == pygame.MOUSEMOTION:
@@ -144,8 +154,12 @@ class App:
                 self.start_button.colour = MINT
             elif self.main_menu_button.isOver(pos):
                 self.main_menu_button.colour = MINT
+            elif self.maze_generate_button.isOver(pos):
+                self.maze_generate_button.colour = MINT
             else:
-                self.start_end_node_button.colour, self.wall_node_button.colour, self.reset_button.colour, self.start_button.colour, self.main_menu_button.colour = STEELBLUE, STEELBLUE, STEELBLUE, STEELBLUE, STEELBLUE
+                self.start_end_node_button.colour, self.wall_node_button.colour, self.reset_button.colour, \
+                self.start_button.colour, self.main_menu_button.colour, self.maze_generate_button.colour = \
+                    STEELBLUE, STEELBLUE, STEELBLUE, STEELBLUE, STEELBLUE, STEELBLUE
 
     def grid_button_keep_colour(self):
         if self.state == 'draw S/E':
@@ -232,7 +246,8 @@ class App:
                 elif self.bidirectional_button.isOver(pos):
                     self.bidirectional_button.colour = AQUAMARINE
                 else:
-                    self.bfs_button.colour, self.dfs_button.colour, self.astar_button.colour, self.dijkstra_button.colour, self.bidirectional_button.colour = WHITE, WHITE, WHITE, WHITE, WHITE
+                    self.bfs_button.colour, self.dfs_button.colour, self.astar_button.colour, self.dijkstra_button.colour, \
+                    self.bidirectional_button.colour = WHITE, WHITE, WHITE, WHITE, WHITE
 
 ##### PLAYING STATE FUNCTIONS #####
 
@@ -282,7 +297,7 @@ class App:
                     # The chunk of code for start/end pos is placed here, because I do not want the drag feature to be available for start/end nodes
                     if self.state == 'draw S/E' and self.start_end_checker < 2:
                         # Choose point colour for grid and record the coordinate of start pos
-                        if self.start_end_checker == 0:
+                        if self.start_end_checker == 0 and (x_grid_pos+1, y_grid_pos+1) not in self.wall_pos:
                             node_colour = TOMATO
                             self.start_node_x = x_grid_pos + 1
                             self.start_node_y = y_grid_pos + 1
@@ -291,7 +306,7 @@ class App:
 
                         # Choose point colour for grid and record the coordinate of end pos
                         # Also, check that the end node is not the same point as start node
-                        elif self.start_end_checker == 1 and (x_grid_pos+1, y_grid_pos+1) != (self.start_node_x, self.start_node_y):
+                        elif self.start_end_checker == 1 and (x_grid_pos+1, y_grid_pos+1) != (self.start_node_x, self.start_node_y) and (x_grid_pos+1, y_grid_pos+1) not in self.wall_pos:
                             node_colour = ROYALBLUE
                             self.end_node_x = x_grid_pos + 1
                             self.end_node_y = y_grid_pos + 1
