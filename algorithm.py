@@ -4,17 +4,18 @@ import settings
 
 class Algorithm(object):
     """Base class for all algorithms."""
-    def __init__(self, pos_start, pos_end):
+    def __init__(self, pos_start, pos_end, wall_pos):
         self.pos_start = pos_start
         self.pos_end = pos_end
+        self.wall_pos = wall_pos
 
 
 class VisualisableAlgorithm(Algorithm):
     """Base class for all visualisable algorithms."""
 
-    def __init__(self, pos_start, pos_end, app):
-        Algorithm.__init__(self, pos_start, pos_end)
+    def __init__(self, app, pos_start, pos_end, wall_pos):
         self.app = app
+        Algorithm.__init__(self, pos_start, pos_end, wall_pos)
 
     def draw_all_paths(self, position, colour):
         i, j = position

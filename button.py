@@ -4,7 +4,7 @@ import settings
 
 class Button(object):
     """Base button class."""
-    def __init__(self, app, colour, x, y, width, height, text=''):
+    def __init__(self, app, colour, x, y, width, height, text, callback):
         self.app = app
         self.colour = colour
         self.x = x
@@ -12,6 +12,10 @@ class Button(object):
         self.width = width
         self.height = height
         self.text = text
+        self.callback = callback
+
+    def click(self):
+        self.callback()
 
     def draw(self, outline=None):
         if outline:
@@ -33,8 +37,8 @@ class Button(object):
 
 class MainMenuButton(Button):
     """Button to be displayed on the start screen."""
-    def __init__(self, app, pos, text=''):
-        Button.__init__(self, app, settings.WHITE, pos * 220 + 8, 550, 200, 70, text)
+    def __init__(self, app, pos, text, callback):
+        Button.__init__(self, app, settings.WHITE, pos * 220 + 8, 550, 200, 70, text, callback)
 
     def highlight(self, highlight):
         self.colour = settings.AQUAMARINE if highlight else settings.WHITE
@@ -42,8 +46,8 @@ class MainMenuButton(Button):
 
 class GridMenuButton(Button):
     """Button to be displayed on the start screen."""
-    def __init__(self, app, pos, text=''):
-        Button.__init__(self, app, settings.AQUAMARINE, 20, 265 + 50 * pos + 20 * pos, 200, 50, text)
+    def __init__(self, app, pos, text, callback):
+        Button.__init__(self, app, settings.AQUAMARINE, 20, 265 + 50 * pos + 20 * pos, 200, 50, text, callback)
 
     def highlight(self, highlight):
         self.colour = settings.STEELBLUE if highlight else settings.AQUAMARINE

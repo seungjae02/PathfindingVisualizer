@@ -4,8 +4,7 @@ import settings
 
 class BreadthFirst(algorithm.VisualisableAlgorithm):
     def __init__(self, app, pos_start, pos_end, wall_pos):
-        algorithm.VisualisableAlgorithm.__init__(self, pos_start, pos_end, app)
-        self.wall_pos = wall_pos
+        algorithm.VisualisableAlgorithm.__init__(self, app, pos_start, pos_end, wall_pos)
         self.visited = [self.pos_start]
         self.route = None
         self.route_found = False
@@ -45,6 +44,22 @@ class BreadthFirst(algorithm.VisualisableAlgorithm):
 
             if self.route_found:
                 break
+
+    def get_routes(self):
+        """For BFS and DFS mainly."""
+        route = []
+        x, y = self.pos_start
+        for move in self.route:
+            if move == 'L':
+                x -= 1
+            elif move == 'R':
+                x += 1
+            elif move == 'U':
+                y -= 1
+            elif move == 'D':
+                y += 1
+            route.append((x, y))
+        return [route]
 
     def is_valid(self, position):
         if position not in self.wall_pos and position not in self.visited:

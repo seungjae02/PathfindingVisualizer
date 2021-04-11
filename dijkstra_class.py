@@ -4,8 +4,7 @@ import settings
 
 class Dijkstra(algorithm.VisualisableAlgorithm):
     def __init__(self, app, pos_start, pos_end, wall_pos):
-        algorithm.VisualisableAlgorithm.__init__(self, pos_start, pos_end, app)
-        self.wall_pos = wall_pos
+        algorithm.VisualisableAlgorithm.__init__(self, app, pos_start, pos_end, wall_pos)
         self.route = []
         self.route_found = False
         self.open_list = []
@@ -14,7 +13,7 @@ class Dijkstra(algorithm.VisualisableAlgorithm):
     def execute(self):
         start_node = Node(self.pos_start, None)
         start_node.distance = 0
-        end_node = Node(self.pos_end, None)
+        # end_node = Node(self.pos_end, None)
 
         self.open_list.append(start_node)
 
@@ -42,6 +41,9 @@ class Dijkstra(algorithm.VisualisableAlgorithm):
 
             self.open_list.pop(current_index)
             self.closed_list.append(current_node.position)
+
+    def get_routes(self):
+        return [self.route]
 
     def is_valid(self, position):
         if position not in self.wall_pos and position not in self.closed_list:

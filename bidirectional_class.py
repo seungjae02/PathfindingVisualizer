@@ -4,8 +4,7 @@ import settings
 
 class Bidirectional(algorithm.VisualisableAlgorithm):
     def __init__(self, app, pos_start, pos_end, wall_pos):
-        algorithm.VisualisableAlgorithm.__init__(self, pos_start, pos_end, app)
-        self.wall_pos = wall_pos
+        algorithm.VisualisableAlgorithm.__init__(self, app, pos_start, pos_end, wall_pos)
         self.visited_pos_f = {self.pos_start}
         self.visited_pos_r = {self.pos_end}
         self.visited_node_f = dict()
@@ -77,6 +76,9 @@ class Bidirectional(algorithm.VisualisableAlgorithm):
                 print(self.route_f)
                 # print(self.route_r)
                 break
+
+    def get_routes(self):
+        return [self.route_f, self.route_r]
 
     def is_valid(self, node, visited_node, visited_pos):
         if node.position not in self.wall_pos and node.position not in visited_pos:
