@@ -1,5 +1,5 @@
 from settings import *
-import random
+import pygame, random
 
 
 class Maze:

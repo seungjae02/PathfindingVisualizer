@@ -1,29 +1,30 @@
-from settings import *
+import pygame
+import settings
 
-class VisualizePath():
-    def __init__(self, surface, start_node_x, start_node_y, path, path_coords):
+
+class VisualizePath(object):
+
+    def __init__(self, surface, position, path, path_coords):
         self.surface = surface
-        self.start_node_x = start_node_x
-        self.start_node_y = start_node_y
+        self.position = position
         self.path = path
         self.path_coords = path_coords
 
-    # For BFS and DFS mainly
     def get_path_coords(self):
-        i = self.start_node_x
-        j = self.start_node_y
+        """For BFS and DFS mainly."""
+        x, y = self.position
         for move in self.path:
             if move == 'L':
-                i -= 1
+                x -= 1
             elif move == 'R':
-                i += 1
+                x += 1
             elif move == 'U':
-                j -= 1
+                y -= 1
             elif move == 'D':
-                j += 1
-            self.path_coords.append((i,j))
+                y += 1
+            self.path_coords.append((x, y))
 
     def draw_path(self):
         self.path_coords.pop()
         for (x_pos, y_pos) in self.path_coords:
-            pygame.draw.rect(self.surface, SPRINGGREEN, (x_pos*24 + 240, y_pos*24, 24, 24), 0)
+            pygame.draw.rect(self.surface, settings.SPRINGGREEN, (x_pos*24 + 240, y_pos*24, 24, 24), 0)

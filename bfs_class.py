@@ -1,49 +1,18 @@
-from settings import *
+import algorithm
+import settings
 
-class BreadthFirst():
-    def __init__(self, app, start_node_x, start_node_y, end_node_x, end_node_y, wall_pos):
-        self.app = app
-        self.start_node_x = start_node_x
-        self.start_node_y = start_node_y
-        self.end_node_x = end_node_x
-        self.end_node_y = end_node_y
+
+class BreadthFirst(algorithm.VisualisableAlgorithm):
+    def __init__(self, app, pos_start, pos_end, wall_pos):
+        algorithm.VisualisableAlgorithm.__init__(self, pos_start, pos_end, app)
         self.wall_pos = wall_pos
-        self.visited = [(self.start_node_x, self.start_node_y)]
+        self.visited = [self.pos_start]
         self.route = None
         self.route_found = False
 
-    def draw_all_paths(self, i, j):
-        ##### Draw each node the computer is visiting as it is searching SIMULTNEOUSLY
-        pygame.draw.rect(self.app.screen, TAN, (i * 24 + 240, j * 24, 24, 24), 0)
-
-        ##### Redraw start/end nodes on top of all routes
-        pygame.draw.rect(self.app.screen, TOMATO, (240 + self.start_node_x * 24, self.start_node_y * 24, 24, 24), 0)
-        pygame.draw.rect(self.app.screen, ROYALBLUE, (240 + self.end_node_x * 24, self.end_node_y * 24, 24, 24), 0)
-
-        # Redraw grid (for aesthetic purposes lol)
-        for x in range(52):
-            pygame.draw.line(self.app.screen, ALICE, (GS_X + x * 24, GS_Y), (GS_X + x * 24, GE_Y))
-        for y in range(30):
-            pygame.draw.line(self.app.screen, ALICE, (GS_X, GS_Y + y * 24), (GE_X, GS_Y + y * 24))
-
-        pygame.display.update()
-
-    def checkValid(self, move):
-        if move not in self.wall_pos and move not in self.visited:
-            self.visited.append(move)
-            return True
-        return False
-
-    def findEnd(self, first_out):
-        if first_out == (self.end_node_x, self.end_node_y):
-            return True
-        return False
-
-    def bfs_execute(self):
-        queue = [(self.start_node_x, self.start_node_y)]
+    def execute(self):
+        queue = [self.pos_start]
         moves_queue = ['']
-        first_out = ''
-        first_moves = ''
 
         while len(queue) > 0:
             # Parent variables of parent nodes at the given time
@@ -61,14 +30,15 @@ class BreadthFirst():
                 elif m == 'D':
                     j += 1
 
-                # Make new variable "latest_moves" for adding onto the queue again, because you don't want the 'parent' variable to change
+                # Make new variable "latest_moves" for adding onto the queue again,
+                # because you don't want the 'parent' variable to change
                 latest_moves = first_moves + m
-                if self.checkValid((i, j)):
-                    self.draw_all_paths(i, j)
+                if self.is_valid((i, j)):
+                    self.draw_all_paths((i, j), settings.TAN)
                     queue.append((i, j))
                     moves_queue.append(latest_moves)
 
-                if self.findEnd((i, j)):
+                if self.find_end((i, j)):
                     self.route = latest_moves
                     self.route_found = True
                     break
@@ -76,3 +46,13 @@ class BreadthFirst():
             if self.route_found:
                 break
 
+    def is_valid(self, position):
+        if position not in self.wall_pos and position not in self.visited:
+            self.visited.append(position)
+            return True
+        return False
+
+    def find_end(self, first_out):
+        if first_out == self.pos_end:
+            return True
+        return False
