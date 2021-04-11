@@ -30,10 +30,6 @@ class Button(object):
         pos_x, pos_y = pos
         return self.x < pos_x < self.x + self.width and self.y < pos_y < self.y + self.height
 
-    def highlight(self, highlight):
-        print("highlight button")
-        self.colour = settings.MINT if highlight else settings.STEELBLUE
-
 
 class MainMenuButton(Button):
     """Button to be displayed on the start screen."""
@@ -41,5 +37,13 @@ class MainMenuButton(Button):
         Button.__init__(self, app, settings.WHITE, pos * 220 + 8, 550, 200, 70, text)
 
     def highlight(self, highlight):
-        print("highlight main menu button")
         self.colour = settings.AQUAMARINE if highlight else settings.WHITE
+
+
+class GridMenuButton(Button):
+    """Button to be displayed on the start screen."""
+    def __init__(self, app, pos, text=''):
+        Button.__init__(self, app, settings.AQUAMARINE, 20, 265 + 50 * pos + 20 * pos, 200, 50, text)
+
+    def highlight(self, highlight):
+        self.colour = settings.STEELBLUE if highlight else settings.AQUAMARINE

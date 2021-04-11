@@ -45,29 +45,12 @@ class App:
         self.but_bidirect = button.MainMenuButton(self, 5, 'Bidirectional Search')
 
         # Define Grid-Menu buttons
-        self.but_se = button.Button(
-            self, settings.AQUAMARINE, 20, settings.START_END_BUTTON_HEIGHT, settings.GRID_BUTTON_LENGTH,
-            settings.GRID_BUTTON_HEIGHT, 'Start/End Node')
-        self.but_wall = button.Button(
-            self, settings.AQUAMARINE, 20,
-            settings.START_END_BUTTON_HEIGHT + settings.GRID_BUTTON_HEIGHT + settings.BUTTON_SPACER,
-            settings.GRID_BUTTON_LENGTH, settings.GRID_BUTTON_HEIGHT, 'Wall Node')
-        self.but_reset = button.Button(
-            self, settings.AQUAMARINE, 20,
-            settings.START_END_BUTTON_HEIGHT + settings.GRID_BUTTON_HEIGHT * 2 + settings.BUTTON_SPACER * 2,
-            settings.GRID_BUTTON_LENGTH, settings.GRID_BUTTON_HEIGHT, 'Reset')
-        self.but_start = button.Button(
-            self, settings.AQUAMARINE, 20,
-            settings.START_END_BUTTON_HEIGHT + settings.GRID_BUTTON_HEIGHT * 3 + settings.BUTTON_SPACER * 3,
-            settings.GRID_BUTTON_LENGTH, settings.GRID_BUTTON_HEIGHT, 'Visualize Path')
-        self.but_main = button.Button(
-            self, settings.AQUAMARINE, 20,
-            settings.START_END_BUTTON_HEIGHT + settings.GRID_BUTTON_HEIGHT * 4 + settings.BUTTON_SPACER * 4,
-            settings.GRID_BUTTON_LENGTH, settings.GRID_BUTTON_HEIGHT, 'Main Menu')
-        self.but_maze = button.Button(
-            self, settings.AQUAMARINE, 20,
-            settings.START_END_BUTTON_HEIGHT + settings.GRID_BUTTON_HEIGHT * 5 + settings.BUTTON_SPACER * 5,
-            settings.GRID_BUTTON_LENGTH, settings.GRID_BUTTON_HEIGHT, 'Generate Maze')
+        self.but_se = button.GridMenuButton(self, 1, 'Start/End Node')
+        self.but_wall = button.GridMenuButton(self, 2, 'Wall Node')
+        self.but_reset = button.GridMenuButton(self, 3, 'Reset')
+        self.but_start = button.GridMenuButton(self, 4, 'Visualize Path')
+        self.but_main = button.GridMenuButton(self, 5, 'Main Menu')
+        self.but_maze = button.GridMenuButton(self, 6, 'Generate Maze')
 
     def run(self):
         while self.running:
@@ -107,13 +90,13 @@ class App:
         for x in range(52):
             pygame.draw.line(
                 self.screen, settings.ALICE,
-                (settings.GS_X + x*self.grid_square_length, settings.GS_Y),
-                (settings.GS_X + x*self.grid_square_length, settings.GE_Y))
+                (settings.GS_X + x * self.grid_square_length, settings.GS_Y),
+                (settings.GS_X + x * self.grid_square_length, settings.GE_Y))
         for y in range(30):
             pygame.draw.line(
                 self.screen, settings.ALICE,
-                (settings.GS_X, settings.GS_Y + y*self.grid_square_length),
-                (settings.GE_X, settings.GS_Y + y*self.grid_square_length))
+                (settings.GS_X, settings.GS_Y + y * self.grid_square_length),
+                (settings.GE_X, settings.GS_Y + y * self.grid_square_length))
 
     def sketch_grid_buttons(self):
         self.but_se.draw(settings.STEELBLUE)
